@@ -1,0 +1,19 @@
+syntax = "proto3";
+package proto;
+
+option go_package = "github.com/douglira/go-grpc/proto";
+
+service Student {
+  rpc GetStudent (GetStudentRequest) returns (GetStudentResponse);
+}
+
+message GetStudentRequest {
+  int32 studentId = 1;
+}
+
+message GetStudentResponse {
+  int32 id = 1;
+  string name = 2;
+  string identityNumber = 3;
+  string generalRegistrationNumber = 4;
+}
