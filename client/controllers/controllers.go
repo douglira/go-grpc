@@ -59,29 +59,15 @@ func FindStudentById(c *gin.Context) {
 }
 
 func RegisterStudent(c *gin.Context) {
-	// var student models.Student
-	// if err := c.ShouldBindJSON(&student); err != nil {
-	// 	c.JSON(http.StatusBadRequest, gin.H{
-	// 		"error": err.Error(),
-	// 	})
-	// 	return
-	// }
+	var student models.Student
+	if err := c.ShouldBindJSON(&student); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
 
-	// result := database.DB.Where(&student, "IdentityNumber").Find(&student)
-	// if result.RowsAffected > 0 {
-	// 	c.JSON(http.StatusBadRequest, gin.H{
-	// 		"error": "Invalid identityNumber",
-	// 	})
-	// 	return
-	// }
+	services.RegisterStudent(student)
 
-	// if err := models.StudentValidator(&student); err != nil {
-	// 	c.JSON(http.StatusBadRequest, gin.H{
-	// 		"error": err.Error(),
-	// 	})
-	// 	return
-	// }
-
-	// database.DB.Create(&student)
 	c.Writer.WriteHeader(http.StatusCreated)
 }
