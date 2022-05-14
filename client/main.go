@@ -1,30 +1,10 @@
 package main
 
 import (
-	"context"
-	"fmt"
-	"log"
-	"time"
-
-	"github.com/douglira/go-grpc/client/service"
-	pb "github.com/douglira/go-grpc/proto"
+	"github.com/douglira/go-grpc/client/routes"
 )
 
-func getStudentById() {
-	conn := service.ServerConnection()
-	defer conn.Close()
-
-	pbStudentClient := pb.NewStudentClient(conn)
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
-	defer cancel()
-
-	r, err := pbStudentClient.GetStudent(ctx, &pb.GetStudentRequest{StudentId: 1})
-	if err != nil {
-		log.Fatalf("could not greet: %v", err)
-	}
-	fmt.Println(r)
-}
-
 func main() {
-	getStudentById()
+	r := routes.GetRouter()
+	r.Run(":5000")
 }

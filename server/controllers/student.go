@@ -9,14 +9,23 @@ import (
 )
 
 type StudentServer struct {
-	pb.UnimplementedStudentServer
+	pb.UnimplementedStudentServiceServer
 }
 
-func (s *StudentServer) GetStudent(ctx context.Context, r *pb.GetStudentRequest) (*pb.GetStudentResponse, error) {
-	var student pb.GetStudentResponse
+func (s *StudentServer) GetStudent(ctx context.Context, r *pb.StudentId) (*pb.Student, error) {
+	var student pb.Student
 	result := database.DB.Model(&models.Student{}).First(&student, r.StudentId)
 	if result.RowsAffected == 0 {
-		return nil, nil
+		return &student, nil
 	}
 	return &student, nil
+}
+
+func (s *StudentServer) GetAllStudents(ctx context.Context, r *pb.Void) (*pb.ListStudents, error) {
+	var listStudent pb.ListStudents = pb.ListStudents{Students: []*pb.Student{}}
+	result := database.DB.Model(&models.Student{}).Find(&listStudent.Students)
+	if result.RowsAffected == 0 {
+		return &listStudent, nil
+	}
+	return &listStudent, nil
 }

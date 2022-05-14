@@ -14,86 +14,122 @@ import (
 // Requires gRPC-Go v1.32.0 or later.
 const _ = grpc.SupportPackageIsVersion7
 
-// StudentClient is the client API for Student service.
+// StudentServiceClient is the client API for StudentService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-type StudentClient interface {
-	GetStudent(ctx context.Context, in *GetStudentRequest, opts ...grpc.CallOption) (*GetStudentResponse, error)
+type StudentServiceClient interface {
+	GetStudent(ctx context.Context, in *StudentId, opts ...grpc.CallOption) (*Student, error)
+	GetAllStudents(ctx context.Context, in *Void, opts ...grpc.CallOption) (*ListStudents, error)
 }
 
-type studentClient struct {
+type studentServiceClient struct {
 	cc grpc.ClientConnInterface
 }
 
-func NewStudentClient(cc grpc.ClientConnInterface) StudentClient {
-	return &studentClient{cc}
+func NewStudentServiceClient(cc grpc.ClientConnInterface) StudentServiceClient {
+	return &studentServiceClient{cc}
 }
 
-func (c *studentClient) GetStudent(ctx context.Context, in *GetStudentRequest, opts ...grpc.CallOption) (*GetStudentResponse, error) {
-	out := new(GetStudentResponse)
-	err := c.cc.Invoke(ctx, "/proto.Student/GetStudent", in, out, opts...)
+func (c *studentServiceClient) GetStudent(ctx context.Context, in *StudentId, opts ...grpc.CallOption) (*Student, error) {
+	out := new(Student)
+	err := c.cc.Invoke(ctx, "/proto.StudentService/GetStudent", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-// StudentServer is the server API for Student service.
-// All implementations must embed UnimplementedStudentServer
+func (c *studentServiceClient) GetAllStudents(ctx context.Context, in *Void, opts ...grpc.CallOption) (*ListStudents, error) {
+	out := new(ListStudents)
+	err := c.cc.Invoke(ctx, "/proto.StudentService/GetAllStudents", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// StudentServiceServer is the server API for StudentService service.
+// All implementations must embed UnimplementedStudentServiceServer
 // for forward compatibility
-type StudentServer interface {
-	GetStudent(context.Context, *GetStudentRequest) (*GetStudentResponse, error)
-	mustEmbedUnimplementedStudentServer()
+type StudentServiceServer interface {
+	GetStudent(context.Context, *StudentId) (*Student, error)
+	GetAllStudents(context.Context, *Void) (*ListStudents, error)
+	mustEmbedUnimplementedStudentServiceServer()
 }
 
-// UnimplementedStudentServer must be embedded to have forward compatible implementations.
-type UnimplementedStudentServer struct {
+// UnimplementedStudentServiceServer must be embedded to have forward compatible implementations.
+type UnimplementedStudentServiceServer struct {
 }
 
-func (UnimplementedStudentServer) GetStudent(context.Context, *GetStudentRequest) (*GetStudentResponse, error) {
+func (UnimplementedStudentServiceServer) GetStudent(context.Context, *StudentId) (*Student, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetStudent not implemented")
 }
-func (UnimplementedStudentServer) mustEmbedUnimplementedStudentServer() {}
+func (UnimplementedStudentServiceServer) GetAllStudents(context.Context, *Void) (*ListStudents, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetAllStudents not implemented")
+}
+func (UnimplementedStudentServiceServer) mustEmbedUnimplementedStudentServiceServer() {}
 
-// UnsafeStudentServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to StudentServer will
+// UnsafeStudentServiceServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to StudentServiceServer will
 // result in compilation errors.
-type UnsafeStudentServer interface {
-	mustEmbedUnimplementedStudentServer()
+type UnsafeStudentServiceServer interface {
+	mustEmbedUnimplementedStudentServiceServer()
 }
 
-func RegisterStudentServer(s grpc.ServiceRegistrar, srv StudentServer) {
-	s.RegisterService(&Student_ServiceDesc, srv)
+func RegisterStudentServiceServer(s grpc.ServiceRegistrar, srv StudentServiceServer) {
+	s.RegisterService(&StudentService_ServiceDesc, srv)
 }
 
-func _Student_GetStudent_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetStudentRequest)
+func _StudentService_GetStudent_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(StudentId)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(StudentServer).GetStudent(ctx, in)
+		return srv.(StudentServiceServer).GetStudent(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/proto.Student/GetStudent",
+		FullMethod: "/proto.StudentService/GetStudent",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(StudentServer).GetStudent(ctx, req.(*GetStudentRequest))
+		return srv.(StudentServiceServer).GetStudent(ctx, req.(*StudentId))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-// Student_ServiceDesc is the grpc.ServiceDesc for Student service.
+func _StudentService_GetAllStudents_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Void)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(StudentServiceServer).GetAllStudents(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/proto.StudentService/GetAllStudents",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(StudentServiceServer).GetAllStudents(ctx, req.(*Void))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+// StudentService_ServiceDesc is the grpc.ServiceDesc for StudentService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
-var Student_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "proto.Student",
-	HandlerType: (*StudentServer)(nil),
+var StudentService_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "proto.StudentService",
+	HandlerType: (*StudentServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
 			MethodName: "GetStudent",
-			Handler:    _Student_GetStudent_Handler,
+			Handler:    _StudentService_GetStudent_Handler,
+		},
+		{
+			MethodName: "GetAllStudents",
+			Handler:    _StudentService_GetAllStudents_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -18,7 +18,7 @@ func main() {
 	}
 
 	s := grpc.NewServer()
-	pb.RegisterStudentServer(s, &controllers.StudentServer{})
+	pb.RegisterStudentServiceServer(s, &controllers.StudentServer{})
 
 	if err := s.Serve(listener); err != nil {
 		log.Fatalf("failed to serve: %v", err)

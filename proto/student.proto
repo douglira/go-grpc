@@ -3,17 +3,24 @@ package proto;
 
 option go_package = "github.com/douglira/go-grpc/proto";
 
-service Student {
-  rpc GetStudent (GetStudentRequest) returns (GetStudentResponse);
+service StudentService {
+  rpc GetStudent (StudentId) returns (Student);
+  rpc GetAllStudents (Void) returns (ListStudents);
 }
 
-message GetStudentRequest {
+message Void {}
+
+message StudentId {
   int32 studentId = 1;
 }
 
-message GetStudentResponse {
+message Student {
   int32 id = 1;
   string name = 2;
   string identityNumber = 3;
   string generalRegistrationNumber = 4;
+}
+
+message ListStudents {
+  repeated Student students = 1;
 }
