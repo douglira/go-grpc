@@ -8,10 +8,13 @@ import (
 	"github.com/douglira/go-grpc/server/controllers"
 	"github.com/douglira/go-grpc/server/database"
 	"google.golang.org/grpc"
+
+	"github.com/douglira/go-grpc/server/handlers"
 )
 
 func main() {
 	database.InitiateConnection()
+	handlers.ExecuteKafkaHandlers()
 	listener, err := net.Listen("tcp", ":8080")
 	if err != nil {
 		panic(err)
